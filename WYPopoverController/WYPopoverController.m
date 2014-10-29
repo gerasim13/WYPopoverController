@@ -844,7 +844,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
         UIView *superHitView = [self.superview hitTest:point withEvent:event];
         testHits = NO;
         
-        if ([self isPassthroughView:superHitView])
+        if ([self isPassthroughView:superHitView] || [[superHitView debugDescription] rangeOfString:@"UIAlertControllerActionView"].location != NSNotFound)
         {
             return superHitView;
         }
@@ -2566,8 +2566,6 @@ static WYPopoverTheme *defaultTheme_ = nil;
     }
     
     [backgroundView setNeedsDisplay];
-    
-    WY_LOG(@"popoverContainerView.frame = %@", NSStringFromCGRect(backgroundView.frame));
 }
 
 - (void)dismissPopoverAnimated:(BOOL)aAnimated
