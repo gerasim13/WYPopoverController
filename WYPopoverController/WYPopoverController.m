@@ -1862,6 +1862,12 @@ static WYPopoverTheme *defaultTheme_ = nil;
     [self positionPopover:YES];
 }
 
+- (void)setPopoverContentSize:(CGSize)size animated:(BOOL)animated
+{
+    popoverContentSize_ = size;
+    [self positionPopover:animated];
+}
+
 - (void)presentPopoverFromRect:(CGRect)aRect
                         inView:(UIView *)aView
       permittedArrowDirections:(WYPopoverArrowDirection)aArrowDirections

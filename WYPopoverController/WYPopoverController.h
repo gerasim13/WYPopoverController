@@ -194,6 +194,10 @@ typedef NS_OPTIONS(NSUInteger, WYPopoverAnimationOptions) {
                        options:(WYPopoverAnimationOptions)aOptions
                     completion:(void (^)(void))completion;
 
+// Misc
+
+- (void)setPopoverContentSize:(CGSize)size animated:(BOOL)animated;
+
 @end
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
