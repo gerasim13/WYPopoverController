@@ -1219,7 +1219,12 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
         outerRect = CGRectInset(outerRect, 0.5, 0.5);
         
         // Inner Path
-        CGMutablePathRef outerPathRef = CGPathCreateMutable();
+        CGMutablePathRef outerPathRef;
+        if (!self.usesRoundedArrow || arrowDirection == WYPopoverArrowDirectionNone) {
+            outerPathRef = CGPathCreateMutable();
+        }
+        
+        UIBezierPath* outerRectPath;
         
         CGPoint origin = CGPointZero;
         
@@ -1262,6 +1267,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
                 [arrowPath addCurveToPoint: CGPointMake(origin.x + arrowBase, origin.y + arrowHeight) controlPoint1: CGPointMake(origin.x + ((arrowBase / 2) + (controlLength * 0.75f)), origin.y + 0) controlPoint2: CGPointMake(origin.x + (arrowBase - controlLength), origin.y + arrowHeight)];
                 [UIColor.whiteColor setFill];
                 [arrowPath fill];
+                outerRectPath = arrowPath;
             } else {
                 origin = CGPointMake(CGRectGetMidX(outerRect) + arrowOffset - arrowBase / 2, CGRectGetMinY(outerRect));
                 
@@ -1291,6 +1297,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
                 [arrowPath addCurveToPoint: CGPointMake(origin.x + arrowBase, origin.y + 0) controlPoint1: CGPointMake(origin.x + ((arrowBase / 2) + (controlLength * 0.75f)), origin.y + arrowHeight) controlPoint2: CGPointMake(origin.x + (arrowBase - controlLength), origin.y + 0)];
                 [UIColor.whiteColor setFill];
                 [arrowPath fill];
+                outerRectPath = arrowPath;
             } else {
                 origin = CGPointMake(CGRectGetMidX(outerRect) + arrowOffset + arrowBase / 2, CGRectGetMaxY(outerRect));
                 
@@ -1320,6 +1327,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
                 [arrowPath addCurveToPoint: CGPointMake(origin.x + arrowHeight, origin.y + 0) controlPoint1: CGPointMake(origin.x + 0, origin.y + ((arrowBase / 2) - controlLength)) controlPoint2: CGPointMake(origin.x + arrowHeight, origin.y + controlLength)];
                 [UIColor.whiteColor setFill];
                 [arrowPath fill];
+                outerRectPath = arrowPath;
             } else {
                 origin = CGPointMake(CGRectGetMinX(outerRect), CGRectGetMidY(outerRect) + arrowOffset + arrowBase / 2);
                 
@@ -1349,6 +1357,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
                 [arrowPath addCurveToPoint: CGPointMake(origin.x + 0, origin.y + 0) controlPoint1: CGPointMake(origin.x + arrowHeight, origin.y + ((arrowBase / 2) - controlLength)) controlPoint2: CGPointMake(origin.x + 0, origin.y + controlLength)];
                 [UIColor.whiteColor setFill];
                 [arrowPath fill];
+                outerRectPath = arrowPath;
             } else {
                 origin = CGPointMake(CGRectGetMaxX(outerRect), CGRectGetMidY(outerRect) + arrowOffset - arrowBase / 2);
                 
@@ -1383,9 +1392,11 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
             CGPathAddLineToPoint(outerPathRef, NULL, origin.x, origin.y);
         }
         
-        CGPathCloseSubpath(outerPathRef);
-        
-        UIBezierPath* outerRectPath = [UIBezierPath bezierPathWithCGPath:outerPathRef];
+        if (!self.usesRoundedArrow || arrowDirection == WYPopoverArrowDirectionNone) {
+            CGPathCloseSubpath(outerPathRef);
+            
+            outerRectPath = [UIBezierPath bezierPathWithCGPath:outerPathRef];
+        }
         
         CGContextSaveGState(context);
         {
@@ -1432,7 +1443,10 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
         [outerRectPath stroke];
         
         //// Cleanup
-        CFRelease(outerPathRef);
+        if (!self.usesRoundedArrow || arrowDirection == WYPopoverArrowDirectionNone) {
+            CFRelease(outerPathRef);
+        }
+        
         CGGradientRelease(fillGradient);
         CGColorSpaceRelease(colorSpace);
         
