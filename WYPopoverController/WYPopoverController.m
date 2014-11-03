@@ -1220,7 +1220,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
         
         // Inner Path
         CGMutablePathRef outerPathRef;
-        if (!self.usesRoundedArrow || arrowDirection == WYPopoverArrowDirectionNone) {
+        if (!self.usesRoundedArrow.boolValue || arrowDirection == WYPopoverArrowDirectionNone) {
             outerPathRef = CGPathCreateMutable();
         }
         
@@ -1257,7 +1257,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
         
         if (arrowDirection == WYPopoverArrowDirectionUp)
         {
-            if (self.usesRoundedArrow) {
+            if (self.usesRoundedArrow.boolValue) {
                 origin = CGPointMake(CGRectGetMidX(outerRect) + arrowOffset - (arrowBase / 2), CGRectGetMinY(outerRect) - arrowHeight);
                 CGFloat controlLength = arrowBase / 5.f;
                 
@@ -1287,7 +1287,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
         
         if (arrowDirection == WYPopoverArrowDirectionDown)
         {
-            if (self.usesRoundedArrow) {
+            if (self.usesRoundedArrow.boolValue) {
                 origin = CGPointMake(CGRectGetMidX(outerRect) + arrowOffset - (arrowBase / 2), CGRectGetMaxY(outerRect));
                 CGFloat controlLength = arrowBase / 5.f;
                 
@@ -1317,7 +1317,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
         
         if (arrowDirection == WYPopoverArrowDirectionLeft)
         {
-            if (self.usesRoundedArrow) {
+            if (self.usesRoundedArrow.boolValue) {
                 origin = CGPointMake(CGRectGetMinX(outerRect) - arrowHeight, CGRectGetMidY(outerRect) + arrowOffset - ( arrowBase / 2));
                 CGFloat controlLength = arrowBase / 5.f;
                 
@@ -1347,7 +1347,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
         
         if (arrowDirection == WYPopoverArrowDirectionRight)
         {
-            if (self.usesRoundedArrow) {
+            if (self.usesRoundedArrow.boolValue) {
                 origin = CGPointMake(CGRectGetMaxX(outerRect), CGRectGetMidY(outerRect) + arrowOffset - ( arrowBase / 2));
                 CGFloat controlLength = arrowBase / 5.f;
                 
@@ -1392,7 +1392,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
             CGPathAddLineToPoint(outerPathRef, NULL, origin.x, origin.y);
         }
         
-        if (!self.usesRoundedArrow || arrowDirection == WYPopoverArrowDirectionNone) {
+        if (!self.usesRoundedArrow.boolValue || arrowDirection == WYPopoverArrowDirectionNone) {
             CGPathCloseSubpath(outerPathRef);
             
             outerRectPath = [UIBezierPath bezierPathWithCGPath:outerPathRef];
@@ -1443,7 +1443,7 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
         [outerRectPath stroke];
         
         //// Cleanup
-        if (!self.usesRoundedArrow || arrowDirection == WYPopoverArrowDirectionNone) {
+        if (!self.usesRoundedArrow.boolValue || arrowDirection == WYPopoverArrowDirectionNone) {
             CFRelease(outerPathRef);
         }
         
