@@ -1834,6 +1834,7 @@ static WYPopoverTheme *defaultTheme_ = nil;
         backgroundView.innerShadowOffset = theme.innerShadowOffset;
         backgroundView.innerCornerRadius = theme.innerCornerRadius;
         backgroundView.viewContentInsets = theme.viewContentInsets;
+        backgroundView.clipsToBounds = YES;
         [backgroundView setNeedsDisplay];
     }
     
