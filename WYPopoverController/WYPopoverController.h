@@ -59,7 +59,7 @@ typedef NS_OPTIONS(NSUInteger, WYPopoverAnimationOptions) {
 @interface WYPopoverBackgroundView : UIView
 
 @property (nonatomic, assign) BOOL usesRoundedArrow        UI_APPEARANCE_SELECTOR;
-@property (nonatomic, assign) BOOL dimBackgroundViewsTintColor        UI_APPEARANCE_SELECTOR;
+@property (nonatomic, assign) BOOL dimsBackgroundViewsTintColor        UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) UIColor *tintColor                UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) UIColor *fillTopColor             UI_APPEARANCE_SELECTOR;
 @property (nonatomic, strong) UIColor *fillBottomColor          UI_APPEARANCE_SELECTOR;
@@ -225,7 +225,7 @@ typedef NS_OPTIONS(NSUInteger, WYPopoverAnimationOptions) {
 @interface WYPopoverTheme : NSObject
 
 @property (nonatomic, assign) BOOL usesRoundedArrow;
-@property (nonatomic, assign) BOOL dimBackgroundViewsTintColor;
+@property (nonatomic, assign) BOOL dimsBackgroundViewsTintColor;
 @property (nonatomic, strong) UIColor *tintColor;
 @property (nonatomic, strong) UIColor *fillTopColor;
 @property (nonatomic, strong) UIColor *fillBottomColor;
