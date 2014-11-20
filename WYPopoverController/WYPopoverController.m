@@ -2402,14 +2402,14 @@ static WYPopoverTheme *defaultTheme_ = nil;
         overlayHeight = overlayView.window.frame.size.height;
 
         CGRect convertedFrame = [overlayView.window convertRect:keyboardRect toView:overlayView];
-        keyboardHeight = convertedFrame.size.height;
+        keyboardHeight = MIN(convertedFrame.size.height, convertedFrame.size.width);
     }
     else
     {
         overlayWidth = UIInterfaceOrientationIsPortrait(orientation) ? overlayView.bounds.size.width : overlayView.bounds.size.height;
         overlayHeight = UIInterfaceOrientationIsPortrait(orientation) ? overlayView.bounds.size.height : overlayView.bounds.size.width;
 
-        keyboardHeight = UIInterfaceOrientationIsPortrait(orientation) ? keyboardRect.size.height : keyboardRect.size.width;
+        keyboardHeight = MIN(keyboardRect.size.height, keyboardRect.size.width);
     }
     
     if (delegate && [delegate respondsToSelector:@selector(popoverControllerShouldIgnoreKeyboardBounds:)]) {
@@ -2810,48 +2810,10 @@ static WYPopoverTheme *defaultTheme_ = nil;
         }
     };
     
-    if (isListeningNotifications == YES)
-    {
-        isListeningNotifications = NO;
-        
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationDidChangeStatusBarOrientationNotification
-                                                      object:nil];
-        
-        [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIDeviceOrientationDidChangeNotification
-                                                      object:nil];
-        
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIKeyboardWillShowNotification
-                                                      object:nil];
-        
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIKeyboardWillHideNotification
-                                                      object:nil];
-    }
-    
-    keyboardRect = CGRectZero;
-    
     if ([viewController isKindOfClass:[UINavigationController class]] == NO)
     {
         [viewController viewWillDisappear:aAnimated];
     }
-    
-    @try {
-        if (isObserverAdded == YES)
-        {
-            isObserverAdded = NO;
-            
-            if ([viewController respondsToSelector:@selector(preferredContentSize)]) {
-                [viewController removeObserver:self forKeyPath:NSStringFromSelector(@selector(preferredContentSize))];
-            } else {
-                [viewController removeObserver:self forKeyPath:NSStringFromSelector(@selector(contentSizeForViewInPopover))];
-            }
-        }
-    }
-    @catch (NSException * __unused exception) {}
     
     if (aAnimated && !self.implicitAnimationsDisabled)
     {
@@ -3356,6 +3318,7 @@ static CGPoint WYPointRelativeToOrientation(CGPoint origin, CGSize size, UIInter
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    isListeningNotifications = NO;
     
     [backgroundView removeFromSuperview];
     [backgroundView setDelegate:nil];
