@@ -45,6 +45,58 @@
 
 #define WY_IS_IOS_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@interface WYKeyboardListener : NSObject 
+
++ (BOOL)isVisible;
++ (CGRect)rect;
+
+@end
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@implementation WYKeyboardListener
+
+static BOOL isVisible;
+static CGRect keyboardRect;
+
++ (void)load
+{
+    @autoreleasepool {
+        keyboardRect = CGRectZero;
+        isVisible = NO;
+        
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];
+    }
+}
+
++ (void)keyboardWillShow:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    keyboardRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    isVisible = YES;
+}
+
++ (void)keyboardWillHide
+{
+    keyboardRect = CGRectZero;
+    isVisible = NO;
+}
+
++ (BOOL)isVisible
+{
+    return isVisible;
+}
+
++ (CGRect)rect
+{
+    return keyboardRect;
+}
+
+@end
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1790,7 +1842,7 @@ static WYPopoverTheme *defaultTheme_ = nil;
         ignoreOrientation = [[NSProcessInfo processInfo] respondsToSelector:@selector(operatingSystemVersion)];
 
         popoverLayoutMargins = UIEdgeInsetsMake(10, 10, 10, 10);
-        keyboardRect = CGRectZero;
+        keyboardRect = WYKeyboardListener.rect;
         animationDuration = WY_POPOVER_DEFAULT_ANIMATION_DURATION;
         
         themeUpdatesEnabled = NO;
