@@ -1739,7 +1739,6 @@ static float edgeSizeFromCornerRadius(float cornerRadius) {
     BOOL                     isInterfaceOrientationChanging;
     BOOL                     ignoreOrientation;
     __weak UIBarButtonItem  *barButtonItem;
-    CGRect                   keyboardRect;
     
     WYPopoverAnimationOptions options;
     
@@ -1842,7 +1841,6 @@ static WYPopoverTheme *defaultTheme_ = nil;
         ignoreOrientation = [[NSProcessInfo processInfo] respondsToSelector:@selector(operatingSystemVersion)];
 
         popoverLayoutMargins = UIEdgeInsetsMake(10, 10, 10, 10);
-        keyboardRect = WYKeyboardListener.rect;
         animationDuration = WY_POPOVER_DEFAULT_ANIMATION_DURATION;
         
         themeUpdatesEnabled = NO;
@@ -2453,7 +2451,7 @@ static WYPopoverTheme *defaultTheme_ = nil;
         overlayWidth = overlayView.window.frame.size.width;
         overlayHeight = overlayView.window.frame.size.height;
 
-        CGRect convertedFrame = [overlayView.window convertRect:keyboardRect toView:overlayView];
+        CGRect convertedFrame = [overlayView.window convertRect:WYKeyboardListener.rect toView:overlayView];
         keyboardHeight = MIN(convertedFrame.size.height, convertedFrame.size.width);
     }
     else
@@ -2461,7 +2459,7 @@ static WYPopoverTheme *defaultTheme_ = nil;
         overlayWidth = UIInterfaceOrientationIsPortrait(orientation) ? overlayView.bounds.size.width : overlayView.bounds.size.height;
         overlayHeight = UIInterfaceOrientationIsPortrait(orientation) ? overlayView.bounds.size.height : overlayView.bounds.size.width;
 
-        keyboardHeight = MIN(keyboardRect.size.height, keyboardRect.size.width);
+        keyboardHeight = MIN(WYKeyboardListener.rect.size.height, WYKeyboardListener.rect.size.width);
     }
     
     if (delegate && [delegate respondsToSelector:@selector(popoverControllerShouldIgnoreKeyboardBounds:)]) {
@@ -2731,7 +2729,7 @@ static WYPopoverTheme *defaultTheme_ = nil;
     //
     if (keyboardHeight > 0) {
         
-        float keyboardY = UIInterfaceOrientationIsPortrait(orientation) ? keyboardRect.origin.y : keyboardRect.origin.x;
+        float keyboardY = UIInterfaceOrientationIsPortrait(orientation) ? WYKeyboardListener.rect.origin.y : WYKeyboardListener.rect.origin.x;
         
         float yOffset = containerFrame.origin.y + containerFrame.size.height - keyboardY;
         
@@ -3086,7 +3084,7 @@ static WYPopoverTheme *defaultTheme_ = nil;
     
     float minX, maxX, minY, maxY = 0;
     
-    float keyboardHeight = UIInterfaceOrientationIsPortrait(orientation) ? keyboardRect.size.height : keyboardRect.size.width;
+    float keyboardHeight = UIInterfaceOrientationIsPortrait(orientation) ? WYKeyboardListener.rect.size.height : WYKeyboardListener.rect.size.width;
     
     if (delegate && [delegate respondsToSelector:@selector(popoverControllerShouldIgnoreKeyboardBounds:)]) {
         BOOL shouldIgnore = [delegate popoverControllerShouldIgnoreKeyboardBounds:self];
@@ -3332,12 +3330,9 @@ static CGPoint WYPointRelativeToOrientation(CGPoint origin, CGSize size, UIInter
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
-    NSDictionary *info = [notification userInfo];
-    keyboardRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    
     //UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     //WY_LOG(@"orientation = %@", WYStringFromOrientation(orientation));
-    //WY_LOG(@"keyboardRect = %@", NSStringFromCGRect(keyboardRect));
+    //WY_LOG(@"WYKeyboardListener.rect = %@", NSStringFromCGRect(WYKeyboardListener.rect));
     
     BOOL shouldIgnore = NO;
     
@@ -3352,8 +3347,6 @@ static CGPoint WYPointRelativeToOrientation(CGPoint origin, CGSize size, UIInter
 
 - (void)keyboardWillHide:(NSNotification *)notification
 {
-    keyboardRect = CGRectZero;
-    
     BOOL shouldIgnore = NO;
     
     if (delegate && [delegate respondsToSelector:@selector(popoverControllerShouldIgnoreKeyboardBounds:)]) {
